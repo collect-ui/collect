@@ -2,8 +2,8 @@ package collect
 
 import (
 	"encoding/json"
-	common "collect/src/collect/common"
-	config "collect/src/collect/config"
+	common "github.com/collect-ui/collect/src/collect/common"
+	config "github.com/collect-ui/collect/src/collect/config"
 	"io"
 )
 

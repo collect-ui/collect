@@ -5,7 +5,7 @@ import (
 
 	"regexp"
 
-	utils "collect/src/collect/utils"
+	utils "github.com/collect-ui/collect/src/collect/utils"
 )
 
 /**

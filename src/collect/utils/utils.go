@@ -2,7 +2,7 @@ package collect
 
 import (
 	"bytes"
-	common "collect/src/collect/common"
+	common "github.com/collect-ui/collect/src/collect/common"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"

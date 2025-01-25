@@ -1,9 +1,6 @@
-module collect
+module github.com/collect-ui/collect
 
 go 1.21.0
-//replace github.com/SelfDown/collect => ./src/collect
-//toolchain go1.22.2
-
 require (
 	github.com/bwmarrin/snowflake v0.3.0
 	github.com/demdxx/gocast v1.2.0
@@ -81,4 +78,4 @@ require (
 	gorm.io/hints v1.1.0 // indirect
 )
 
-// replace collect => ./src/collect
+

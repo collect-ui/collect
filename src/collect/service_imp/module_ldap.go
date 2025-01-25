@@ -2,9 +2,9 @@ package collect
 
 import (
 	"encoding/json"
-	common "collect/src/collect/common"
-	config "collect/src/collect/config"
-	utils "collect/src/collect/utils"
+	common "github.com/collect-ui/collect/src/collect/common"
+	config "github.com/collect-ui/collect/src/collect/config"
+	utils "github.com/collect-ui/collect/src/collect/utils"
 	"github.com/go-ldap/ldap/v3"
 	"log"
 	"strings"

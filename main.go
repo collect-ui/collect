@@ -1,9 +1,9 @@
 package main
 
 import (
-	gen "collect/gen"
-	"collect/model"
-	templateService "collect/src/collect/service_imp"
+	gen "github.com/collect-ui/collect/gen"
+	"github.com/collect-ui/collect/model"
+	templateService "github.com/collect-ui/collect/src/collect/service_imp"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"

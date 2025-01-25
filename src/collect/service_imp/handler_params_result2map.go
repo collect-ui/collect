@@ -1,9 +1,9 @@
 package collect
 
 import (
-	common "collect/src/collect/common"
-	config "collect/src/collect/config"
-	utils "collect/src/collect/utils"
+	common "github.com/collect-ui/collect/src/collect/common"
+	config "github.com/collect-ui/collect/src/collect/config"
+	utils "github.com/collect-ui/collect/src/collect/utils"
 )
 
 type Result2Map struct {

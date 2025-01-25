@@ -2,7 +2,7 @@ package collect
 
 import (
 	"encoding/json"
-	utils "collect/src/collect/utils"
+	utils "github.com/collect-ui/collect/src/collect/utils"
 	text_template "text/template"
 )
 

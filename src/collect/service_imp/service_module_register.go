@@ -1,7 +1,7 @@
 package collect
 
 import (
-	config "collect/src/collect/config"
+	config "github.com/collect-ui/collect/src/collect/config"
 	"reflect"
 )
 

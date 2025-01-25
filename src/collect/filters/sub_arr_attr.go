@@ -1,6 +1,6 @@
 package collect
 
-import utils "collect/src/collect/utils"
+import utils "github.com/collect-ui/collect/src/collect/utils"
 
 // 二维数组
 // arr[x][field][y]['attr']

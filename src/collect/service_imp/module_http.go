@@ -3,9 +3,9 @@ package collect
 import (
 	"bytes"
 	"encoding/json"
-	common "collect/src/collect/common"
-	config "collect/src/collect/config"
-	utils "collect/src/collect/utils"
+	common "github.com/collect-ui/collect/src/collect/common"
+	config "github.com/collect-ui/collect/src/collect/config"
+	utils "github.com/collect-ui/collect/src/collect/utils"
 	"io"
 	"io/ioutil"
 	"net/http"

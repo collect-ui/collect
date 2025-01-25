@@ -2,11 +2,11 @@ package collect
 
 import (
 	"encoding/json"
-	common "collect/src/collect/common"
+	common "github.com/collect-ui/collect/src/collect/common"
 	"log"
 
 	// service_config "test.mod/src/collect/service_config"
-	utils "collect/src/collect/utils"
+	utils "github.com/collect-ui/collect/src/collect/utils"
 
 	"gopkg.in/yaml.v2"
 )

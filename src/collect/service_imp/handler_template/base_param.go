@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"strings"
 
-	utils "collect/src/collect/utils"
+	utils "github.com/collect-ui/collect/src/collect/utils"
 )
 
 // todo  定义一个结构体

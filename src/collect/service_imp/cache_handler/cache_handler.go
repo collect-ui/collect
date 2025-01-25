@@ -2,7 +2,7 @@ package collect
 
 import (
 	"fmt"
-	utils "collect/src/collect/utils"
+	utils "github.com/collect-ui/collect/src/collect/utils"
 	"github.com/dgraph-io/ristretto"
 	"strings"
 	"time"

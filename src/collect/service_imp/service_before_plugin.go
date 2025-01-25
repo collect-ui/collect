@@ -1,10 +1,10 @@
 package collect
 
 import (
-	common "collect/src/collect/common"
-	"collect/src/collect/config"
-	cacheHandler "collect/src/collect/service_imp/cache_handler"
-	utils "collect/src/collect/utils"
+	common "github.com/collect-ui/collect/src/collect/common"
+	"github.com/collect-ui/collect/src/collect/config"
+	cacheHandler "github.com/collect-ui/collect/src/collect/service_imp/cache_handler"
+	utils "github.com/collect-ui/collect/src/collect/utils"
 	"encoding/base64"
 	"github.com/demdxx/gocast"
 	"net"

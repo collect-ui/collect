@@ -2,8 +2,8 @@ package collect
 
 import (
 	"fmt"
-	serviceImp "collect/src/collect/service_imp"
-	utils "collect/src/collect/utils"
+	serviceImp "github.com/collect-ui/collect/src/collect/service_imp"
+	utils "github.com/collect-ui/collect/src/collect/utils"
 	"gorm.io/gen"
 	"io/ioutil"
 	"regexp"
