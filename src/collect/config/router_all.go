@@ -5,7 +5,7 @@ import (
 	"strings"
 	text_template "text/template"
 
-	utils "github.com/SelfDown/collect/src/collect/utils"
+	utils "collect/src/collect/utils"
 )
 
 // type ModuleResult interface {

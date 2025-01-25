@@ -2,9 +2,9 @@ package collect
 
 import (
 	"encoding/json"
-	common "github.com/SelfDown/collect/src/collect/common"
-	config "github.com/SelfDown/collect/src/collect/config"
-	utils "github.com/SelfDown/collect/src/collect/utils"
+	common "collect/src/collect/common"
+	config "collect/src/collect/config"
+	utils "collect/src/collect/utils"
 	"github.com/go-ldap/ldap/v3"
 	"log"
 	"strings"

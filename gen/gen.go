@@ -2,8 +2,8 @@ package collect
 
 import (
 	"fmt"
-	serviceImp "github.com/SelfDown/collect/src/collect/service_imp"
-	utils "github.com/SelfDown/collect/src/collect/utils"
+	serviceImp "collect/src/collect/service_imp"
+	utils "collect/src/collect/utils"
 	"gorm.io/gen"
 	"io/ioutil"
 	"regexp"
@@ -30,7 +30,7 @@ func fixModel() {
 		filePath := directory + "/" + name
 		content, _ := ioutil.ReadFile(filePath)
 		contentData := utils.Strval(content)
-		if strings.Contains(contentData,"PrimaryKey"){
+		if strings.Contains(contentData, "PrimaryKey") {
 			continue
 		}
 		//tableName := strings.ReplaceAll(name, ".gen.go", "") 替换成正则

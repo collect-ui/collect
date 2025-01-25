@@ -1,9 +1,9 @@
 package collect
 
 import (
-	common "github.com/SelfDown/collect/src/collect/common"
-	config "github.com/SelfDown/collect/src/collect/config"
-	utils "github.com/SelfDown/collect/src/collect/utils"
+	common "collect/src/collect/common"
+	config "collect/src/collect/config"
+	utils "collect/src/collect/utils"
 )
 
 /**
@@ -20,15 +20,15 @@ func (uf *PropArr) HandlerData(template *config.Template, handlerParam *config.H
 	for _, item := range arr {
 
 		// 为了处理二级数组
-		if handlerParam.AppendItem{
+		if handlerParam.AppendItem {
 			sub_arr, errMsg := utils.RenderVarToArrMap(handlerParam.Value, item)
 			if !utils.IsValueEmpty(errMsg) {
-                continue
-            }
+				continue
+			}
 			for _, v := range sub_arr {
-                li = append(li, v)
-            }
-		}else if !utils.IsValueEmpty(handlerParam.Fields){
+				li = append(li, v)
+			}
+		} else if !utils.IsValueEmpty(handlerParam.Fields) {
 			var paramsCopy map[string]interface{}
 			if !utils.IsValueEmpty(handlerParam.Item) { // 如果没有配置item 则取本身
 				paramsCopy = utils.CopyMap(params)
@@ -43,13 +43,13 @@ func (uf *PropArr) HandlerData(template *config.Template, handlerParam *config.H
 					paramsCopy["loop_index"] = index
 					//渲染值
 					value := utils.RenderTplDataWithType(field.TemplateTpl, paramsCopy, field.Type)
-					if utils.IsValueEmpty(value){
+					if utils.IsValueEmpty(value) {
 						continue
 					}
 					li = append(li, value)
 				}
 			}
-		} else{
+		} else {
 			value := utils.RenderVar(handlerParam.Value, item)
 			li = append(li, value)
 		}

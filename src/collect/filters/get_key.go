@@ -1,7 +1,7 @@
 package collect
 
 import (
-	utils "github.com/SelfDown/collect/src/collect/utils"
+	utils "collect/src/collect/utils"
 )
 
 func GetKey(key string) string {

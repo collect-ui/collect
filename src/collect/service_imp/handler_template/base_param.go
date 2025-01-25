@@ -4,10 +4,10 @@ import (
 	"reflect"
 	"strings"
 
-	utils "github.com/SelfDown/collect/src/collect/utils"
+	utils "collect/src/collect/utils"
 )
 
-//todo  定义一个结构体
+// todo  定义一个结构体
 // 1 根据字段名返回参数情况下，字段名，值情况下的字段名。用于渲染渲染第一sql 渲染变量处理，第二次渲染预编译变量
 // 2 返回字段名形式下的，参数值列表，用于第二次的渲染参数值
 // 3 返回 2渲染实际结果值

@@ -1,9 +1,9 @@
 package collect
 
 import (
-	common "github.com/SelfDown/collect/src/collect/common"
-	config "github.com/SelfDown/collect/src/collect/config"
-	utils "github.com/SelfDown/collect/src/collect/utils"
+	common "collect/src/collect/common"
+	config "collect/src/collect/config"
+	utils "collect/src/collect/utils"
 )
 
 type Param2Result struct {
@@ -13,7 +13,7 @@ type Param2Result struct {
 func (pr *Param2Result) HandlerData(template *config.Template, handlerParam *config.HandlerParam, ts *TemplateService) *common.Result {
 	params := template.GetParams()
 
-	result :=utils.RenderVar(handlerParam.Field,params)
+	result := utils.RenderVar(handlerParam.Field, params)
 	//result, ok := params[utils.GetRenderVarName(handlerParam.Field)]
 	//if !ok {
 	//	return common.NotOk(handlerParam.Field + "在参数中没有找到")

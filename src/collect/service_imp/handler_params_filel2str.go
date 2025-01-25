@@ -1,8 +1,8 @@
 package collect
 
 import (
-	common "github.com/SelfDown/collect/src/collect/common"
-	config "github.com/SelfDown/collect/src/collect/config"
+	common "collect/src/collect/common"
+	config "collect/src/collect/config"
 	"io"
 )
 

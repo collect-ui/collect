@@ -1,7 +1,7 @@
 package collect
 
 import (
-	config "github.com/SelfDown/collect/src/collect/config"
+	config "collect/src/collect/config"
 	"reflect"
 )
 

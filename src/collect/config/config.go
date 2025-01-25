@@ -1,8 +1,8 @@
 package collect
 
 import (
-	common "github.com/SelfDown/collect/src/collect/common"
-	utils "github.com/SelfDown/collect/src/collect/utils"
+	common "collect/src/collect/common"
+	utils "collect/src/collect/utils"
 )
 
 /*

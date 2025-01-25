@@ -1,8 +1,8 @@
-module github.com/SelfDown/collect
+module collect
 
 go 1.21.0
-
-toolchain go1.22.2
+//replace github.com/SelfDown/collect => ./src/collect
+//toolchain go1.22.2
 
 require (
 	github.com/bwmarrin/snowflake v0.3.0

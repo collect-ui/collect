@@ -5,7 +5,7 @@ import (
 
 	"regexp"
 
-	utils "github.com/SelfDown/collect/src/collect/utils"
+	utils "collect/src/collect/utils"
 )
 
 /**
