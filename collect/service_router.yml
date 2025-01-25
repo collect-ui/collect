@@ -176,6 +176,14 @@ data_handler:
     name: 文件转data_json
     type: inner
     path: File2DataJson
+  - key: file2str
+    name: 上传文件转字符串
+    type: inner
+    path: File2Str
+  - key: file2json
+    name: 上传文件转json
+    type: inner
+    path: File2Json
   - key: field2array
     name: 字段转数组
     type: inner

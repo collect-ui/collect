@@ -19,6 +19,7 @@ func (uf *GroupBy) HandlerData(template *config.Template, handlerParam *config.H
 	fields := uf.GetFieldNames(handlerParam, params)
 	appendItemParam := handlerParam.AppendItemParam
 	orderList := make([]map[string]interface{}, 0)
+	//rule:=handlerParam.Rule
 	for _, item := range arr {
 		valueList := utils.GetFieldValueList(fields, item)
 		key := strings.Join(valueList, "_$[#]$_")
@@ -43,6 +44,12 @@ func (uf *GroupBy) HandlerData(template *config.Template, handlerParam *config.H
 		} else {
 			children := dictItem[childName].([]map[string]interface{})
 			children = append(children, item)
+			// 取最后一条记录
+			if handlerParam.Rule=="last"{
+				for attr,value:=range item{
+					dictItem[attr]=value
+				}
+			}
 			dictItem[childName] = children
 		}
 

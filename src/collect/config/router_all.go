@@ -290,7 +290,7 @@ type HandlerParam struct {
 	AppendParam         bool                    `yaml:"append_param"json:"append_param"`           // 是否添加参数
 	NoneFillRight       bool                    `yaml:"none_fill_right"json:"none_fill_right"`     // 是否添加右边参数
 	AppendItemParam     bool                    `yaml:"append_item_param"json:"append_item_param"` // 是否添加参数
-	AppendItem          bool                    `yaml:"append_item"json:"append_item_param"`       // 是否添加参数
+	AppendItem          bool                    `yaml:"append_item"json:"append_item"`             // 是否添加参数
 	SaveOriginal        bool                    `yaml:"save_original"json:"save_original"`         // 是否添加参数
 	Foreach             string                  //循环数组
 	Item                string                  // for 循环里面的item
@@ -337,6 +337,10 @@ type HandlerParam struct {
 	Pid                 string //parent_id
 	Id                  string //id
 	Prefix              string //flow的运行结果前缀
+	Ancestors           string // 处理树的层级
+	WithID              bool   `yaml:"with_id"json:"with_id"`   // 树是否带ID
+	LoopMax             int64  `yaml:"loop_max"json:"loop_max"` //
+
 }
 type ExcelConfig struct {
 	Name   string   // 名称

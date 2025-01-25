@@ -56,6 +56,18 @@ func CastValue(value interface{}, dataType string) interface{} {
 			return &valueNew
 		}
 		return valueNew
+	case "float64":
+		valueNew := gocast.ToFloat64(value)
+		if isPtr {
+			return &valueNew
+		}
+		return valueNew
+	case "float32":
+		valueNew := gocast.ToFloat32(value)
+		if isPtr {
+			return &valueNew
+		}
+		return valueNew
 	case "time.time":
 		fallthrough
 	case "time":

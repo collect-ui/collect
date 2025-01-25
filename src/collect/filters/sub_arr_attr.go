@@ -12,7 +12,8 @@ func SubArrAttr(arr []map[string]interface{}, x int, field string, y int, attr s
 
 	subArr, _ := utils.RenderVarToArrMap(field, item)
 	if y >= len(subArr) {
-		return ""
+		return "0"
 	}
-	return subArr[y][attr]
+	value:=subArr[y][attr]
+	return value
 }

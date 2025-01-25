@@ -40,6 +40,8 @@ func GetRegisterList() []ModuleResult {
 	l = append(l, &ToList{})
 	l = append(l, &OrderBy{})
 	l = append(l, &Agg{})
+	l = append(l, &File2Str{})
+	l = append(l, &File2Json{})
 	// module 模块处理
 	l = append(l, &ModelSaveService{})
 	l = append(l, &ModelUpdateService{})

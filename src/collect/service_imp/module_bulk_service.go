@@ -25,11 +25,11 @@ func runServiceList(foreach []map[string]interface{}, params map[string]interfac
 	resultList := make([]map[string]interface{}, len(foreach))
 	transfer := utils.IsValueEmpty(serviceMap)
 	// 生成参数
-	cpyParams := utils.Copy(params)
+	//cpyParams := utils.Copy(params)
 	for index, item := range foreach {
 		batchService := utils.Copy(batch.Service).(map[string]interface{})
-		//设置params
-		item["params"] = cpyParams
+		//设置params,这里取消params 的试下
+		item["params"] = params
 		serviceParam := utils.GetServiceParam(batchService, item, batch.AppendItemParam)
 		//存在转换的map就转换
 		if !transfer {
@@ -41,7 +41,7 @@ func runServiceList(foreach []map[string]interface{}, params map[string]interfac
 			targetService := serviceMap[oldService]
 			serviceParam[serviceName] = targetService
 		}
-
+		delete(serviceParam, "params")
 		ch := make(chan *common.Result)
 		resultChanList[index] = ch
 		go runService(serviceParam, ts, resultChanList[index])
@@ -73,7 +73,10 @@ func (s *BulkService) Result(template *config.Template, ts *TemplateService) *co
 	//resultChanList := make([]chan *common.Result, len(foreach))
 	l := len(foreach)
 	resultList := make([]map[string]interface{}, 0)
-	size := 30
+	size := gocast.ToInt(batch.LoopMax)
+	if size == 0 {
+		size = 30
+	}
 	times := gocast.ToInt(math.Ceil(float64(len(foreach)) / float64(size)))
 
 	for i := 0; i < times; i++ {

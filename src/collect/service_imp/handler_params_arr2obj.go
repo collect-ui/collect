@@ -40,6 +40,7 @@ func (ao *Arr2Obj) HandlerData(template *config.Template, handlerParam *config.H
 		}
 		varName := utils.GetRenderVarName(handlerParam.Field)
 		params[varName] = dataList[0]
+		return common.Ok(dataList[0], "处理参数成功")
 	}
 
 	r := common.Ok(nil, "处理参数成功")

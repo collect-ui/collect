@@ -117,6 +117,8 @@ func RunScheduleService() []*collect.ServiceConfig {
 	params := make(map[string]interface{})
 	c := cron.New()
 	i := 0
+	scheduleLog := utils.GetAppKey("schedule_log")
+	scheduleList := make([]map[string]interface{}, 0)
 	for _, service := range services {
 		if !utils.IsValueEmpty(service.Schedule.Enable) && !utils.IsValueEmpty(service.Schedule.ScheduleSpec) {
 			run := utils.RenderTplBool(service.Schedule.EnableTpl, params)
@@ -126,13 +128,27 @@ func RunScheduleService() []*collect.ServiceConfig {
 				paramService := make(map[string]interface{})
 				paramService["service"] = service.Service
 				fmt.Println(utils.Strval(i) + ".添加定时任务[" + service.Service + "]" + service.Schedule.ScheduleSpec)
-				c.AddFunc(service.Schedule.ScheduleSpec, func() {
-					ts := TemplateService{OpUser: "schedule"}
-					ts.ResultInner(paramService)
-				})
+				scheduleList = append(scheduleList, paramService)
 			}
 		}
 
+	}
+	for index, service := range scheduleService {
+		c.AddFunc(service.Schedule.ScheduleSpec, func() {
+			paramService := scheduleList[index]
+			ts := TemplateService{OpUser: "schedule"}
+			if scheduleLog == "true" {
+				fmt.Printf("schedule任务开始执行, service: %s, params: %+v\n", paramService["service"], paramService)
+			}
+			startTime := time.Now()
+			r := ts.ResultInner(paramService)
+			endTime := time.Now()
+			if scheduleLog == "true" {
+				fmt.Printf("schedule任务执行成功, service: %s, params: %+v\n", paramService["service"], paramService)
+				fmt.Printf("任务耗时: %v\n", endTime.Sub(startTime))
+				fmt.Printf("%+v,%+v\n", r.Success, r.Msg)
+			}
+		})
 	}
 	if len(scheduleService) > 0 {
 		c.Start()
@@ -339,7 +355,6 @@ func HandlerRequest(c *gin.Context) {
 			} else {
 				params[k] = nil
 			}
-
 		}
 		// 处理单个文件上传
 		file, fileHeader, error := c.Request.FormFile("file")
@@ -364,11 +379,60 @@ func HandlerRequest(c *gin.Context) {
 			data = common.NotOk(dv.String())
 		},
 	}.Do()
-
-	// 处理amis结果
-	//handlerAmis(data)
 	if ts.IsFileResponse {
+		if !utils.IsValueEmpty(ts.ResponseFilePath) {
+			filename := ts.ResponseFileName
+			c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename)) //fmt.Sprintf("attachment; filename=%s", filename)对下载的文件重命名
+			c.Writer.Header().Add("Content-Type", "application/octet-stream")
+			c.File(ts.ResponseFilePath)
+		}
 
+	} else {
+		c.JSON(200, data)
+	}
+}
+
+func HandlerRequestWithParams(c *gin.Context, other map[string]interface{}) {
+	ts := getTs(c)
+
+	//设置参数
+	params := make(map[string]interface{})
+	c.Bind(&params)
+	for k, v := range other {
+		params[k] = v
+	}
+	if c.Request.PostForm != nil {
+		for k, v := range c.Request.PostForm {
+			if len(v) > 0 {
+				params[k] = v[0]
+			} else {
+				params[k] = nil
+			}
+		}
+		// 处理单个文件上传
+		file, fileHeader, error := c.Request.FormFile("file")
+		if error != nil {
+			data := common.NotOk(error.Error())
+			c.JSON(200, data)
+		}
+
+		ts.FileHeader = fileHeader
+		ts.File = file
+	}
+	// 设置session
+
+	// 处理结果
+	var data *common.Result
+	utils.Block{
+		Try: func() {
+			data = ts.Result(params, true)
+		},
+		Catch: func(e utils.Exception) {
+			dv := reflect.ValueOf(e)
+			data = common.NotOk(dv.String())
+		},
+	}.Do()
+	if ts.IsFileResponse {
 		if !utils.IsValueEmpty(ts.ResponseFilePath) {
 			filename := ts.ResponseFileName
 			c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename)) //fmt.Sprintf("attachment; filename=%s", filename)对下载的文件重命名
@@ -457,7 +521,12 @@ func (t *TemplateService) before(params map[string]interface{}, isHttp bool) (*c
 	// todo: 这里只示例了一个用户ID
 	// 设置操作用户,需要将模块的变量，赋值给temp,比如session,event_id，http 的请求对象，http 的请求头
 	// 内部的服务调用，也是如此，比如template 生成了一个事件ID,后面服务沿用这个事件ID,直到服务就结束
-	temp.OpUser = sessioinUserId(*t.GetSession())
+	if !utils.IsValueEmpty(t.OpUser) {
+		temp.OpUser = t.OpUser
+	} else {
+		temp.OpUser = sessioinUserId(*t.GetSession())
+	}
+
 	if temp.Log {
 		msg := "【" + temp.OpUser + "】访问:" + serviceName
 		temp.LogData(msg)

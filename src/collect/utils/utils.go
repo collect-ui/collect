@@ -2,6 +2,8 @@ package collect
 
 import (
 	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	common "github.com/SelfDown/collect/src/collect/common"
@@ -163,6 +165,16 @@ func RenderTplDataWithType(Tpl *text_template.Template, params map[string]interf
 	if value == nil {
 		return value
 	}
+	if dataType == "json" {
+		var data interface{}
+		err := json.Unmarshal([]byte(gocast.ToString(value)), &data)
+		if err != nil {
+			fmt.Println("解析 JSON 失败:", err, value)
+			return value
+		}
+		return data
+
+	}
 	t := reflect.TypeOf(value)
 	//如果是非字符串类型，直接返回
 	if t.Kind().String() != "string" {
@@ -257,10 +269,14 @@ func RenderVarToArrMap(name string, params map[string]interface{}) ([]map[string
 }
 
 func GetRenderVarName(name string) string {
-	varName := strings.Replace(name, "[", "", -1)
-	// 替换右边括号
-	varName = strings.Replace(varName, "]", "", -1)
-	return varName
+	//varName := strings.Replace(name, "[", "", -1)
+	//// 替换右边括号
+	//varName = strings.Replace(varName, "]", "", -1)
+	//return varName
+	if strings.HasPrefix(name, "[") && strings.HasSuffix(name, "]") {
+		return name[1 : len(name)-1]
+	}
+	return name
 }
 func GetFieldValueList(fields []string, params map[string]interface{}) []string {
 	valueList := make([]string, 0)
@@ -294,6 +310,17 @@ func RenderVar(name string, params map[string]interface{}) interface{} {
 		}
 		return strings.Join(valueList, GetSplitConst())
 	}
+	if strings.Contains(varName, "[") && strings.Contains(varName, "]") {
+		varArr := strings.Split(varName, "[")
+		paramName := varArr[0]
+		index := gocast.ToInt(strings.Split(varArr[1], "]")[0])
+		arr, _ := RenderVarToArrMap(paramName, params)
+		if len(arr) == 0 {
+			return nil
+		}
+		return arr[index]
+	}
+
 	// 取一级变量
 	tmpArr := strings.Split(varName, ".")
 	first := tmpArr[0]
@@ -369,6 +396,7 @@ func RenderTpl(Tpl *text_template.Template, params map[string]interface{}) strin
 /*
 * 指针拷贝引用
  */
+
 func Copy(src interface{}) interface{} {
 	if src == nil {
 		return nil
@@ -377,23 +405,7 @@ func Copy(src interface{}) interface{} {
 	cpy := reflect.New(original.Type()).Elem()
 	CopyRecursive(original, cpy)
 
-	value := cpy.Interface()
-	return value
-}
-
-/*
-* 指针也同时生成一份
- */
-func CopyWithPtr(src interface{}) interface{} {
-	if src == nil {
-		return nil
-	}
-	original := reflect.ValueOf(src)
-	cpy := reflect.New(original.Type()).Elem()
-	CopyRecursivePtr(original, cpy)
-
-	value := cpy.Interface()
-	return value
+	return cpy.Interface()
 }
 
 func CopyRecursive(src, dst reflect.Value) {
@@ -405,27 +417,6 @@ func CopyRecursive(src, dst reflect.Value) {
 	}
 
 	switch src.Kind() {
-	//这里将指针拷贝去掉，直接引用，如果需要将指针重新分配对象，这里可以改造一个方法，将此段开发
-	//目前主要处理模板指针对象，发现模板函数uuid 方法没有挂载上，经过排除发现template 有个common 对象
-	//没有赋值，还nil,所以改成直接引用指针对象
-
-	//case reflect.Ptr:
-	//if withPtr {
-	//	originalValue := src.Elem()
-	//
-	//	if !originalValue.IsValid() {
-	//		return
-	//	}
-	//	dst.Set(reflect.New(originalValue.Type()))
-	//	CopyRecursive(originalValue, dst.Elem(), withPtr)
-	//}
-	//case reflect.Ptr:
-	//	if !src.IsNil() {
-	//		originalValue := src.Elem()
-	//		dst.Set(reflect.New(originalValue.Type()))
-	//		CopyRecursive(originalValue, dst.Elem())
-	//	}
-
 	case reflect.Interface:
 		if src.IsNil() {
 			return
@@ -474,6 +465,113 @@ func CopyRecursive(src, dst reflect.Value) {
 		dst.Set(src)
 	}
 }
+
+//func Copy(src interface{}) interface{} {
+//	if src == nil {
+//		return nil
+//	}
+//	original := reflect.ValueOf(src)
+//	cpy := reflect.New(original.Type()).Elem()
+//	CopyRecursive(original, cpy)
+//
+//	value := cpy.Interface()
+//	return value
+//}
+
+/*
+* 指针也同时生成一份
+ */
+func CopyWithPtr(src interface{}) interface{} {
+	if src == nil {
+		return nil
+	}
+	original := reflect.ValueOf(src)
+	cpy := reflect.New(original.Type()).Elem()
+	CopyRecursivePtr(original, cpy)
+
+	value := cpy.Interface()
+	return value
+}
+
+//
+//func CopyRecursive(src, dst reflect.Value) {
+//	if src.CanInterface() {
+//		if copier, ok := src.Interface().(Interface); ok {
+//			dst.Set(reflect.ValueOf(copier.DeepCopy()))
+//			return
+//		}
+//	}
+//
+//	switch src.Kind() {
+//	//这里将指针拷贝去掉，直接引用，如果需要将指针重新分配对象，这里可以改造一个方法，将此段开发
+//	//目前主要处理模板指针对象，发现模板函数uuid 方法没有挂载上，经过排除发现template 有个common 对象
+//	//没有赋值，还nil,所以改成直接引用指针对象
+//
+//	//case reflect.Ptr:
+//	//if withPtr {
+//	//	originalValue := src.Elem()
+//	//
+//	//	if !originalValue.IsValid() {
+//	//		return
+//	//	}
+//	//	dst.Set(reflect.New(originalValue.Type()))
+//	//	CopyRecursive(originalValue, dst.Elem(), withPtr)
+//	//}
+//	//case reflect.Ptr:
+//	//	if !src.IsNil() {
+//	//		originalValue := src.Elem()
+//	//		dst.Set(reflect.New(originalValue.Type()))
+//	//		CopyRecursive(originalValue, dst.Elem())
+//	//	}
+//
+//	case reflect.Interface:
+//		if src.IsNil() {
+//			return
+//		}
+//		originalValue := src.Elem()
+//		copyValue := reflect.New(originalValue.Type()).Elem()
+//		CopyRecursive(originalValue, copyValue)
+//		dst.Set(copyValue)
+//
+//	case reflect.Struct:
+//		t, ok := src.Interface().(time.Time)
+//		if ok {
+//			dst.Set(reflect.ValueOf(t))
+//			return
+//		}
+//		for i := 0; i < src.NumField(); i++ {
+//			if src.Type().Field(i).PkgPath != "" {
+//				continue
+//			}
+//			CopyRecursive(src.Field(i), dst.Field(i))
+//		}
+//
+//	case reflect.Slice:
+//		if src.IsNil() {
+//			return
+//		}
+//		dst.Set(reflect.MakeSlice(src.Type(), src.Len(), src.Cap()))
+//		for i := 0; i < src.Len(); i++ {
+//			CopyRecursive(src.Index(i), dst.Index(i))
+//		}
+//
+//	case reflect.Map:
+//		if src.IsNil() {
+//			return
+//		}
+//		dst.Set(reflect.MakeMap(src.Type()))
+//		for _, key := range src.MapKeys() {
+//			originalValue := src.MapIndex(key)
+//			copyValue := reflect.New(originalValue.Type()).Elem()
+//			CopyRecursive(originalValue, copyValue)
+//			copyKey := Copy(key.Interface())
+//			dst.SetMapIndex(reflect.ValueOf(copyKey), copyValue)
+//		}
+//
+//	default:
+//		dst.Set(src)
+//	}
+//}
 
 func CopyRecursivePtr(src, dst reflect.Value) {
 	if src.CanInterface() {
@@ -885,4 +983,15 @@ func RemoveElementString(slice []string, target string) []string {
 		}
 	}
 	return result
+}
+
+func GenerateShortUniqueID(inputStr string, length int) string {
+	// 计算 SHA-256 哈希值
+	hash := sha256.Sum256([]byte(inputStr))
+	hexDig := hex.EncodeToString(hash[:])
+
+	// 截取指定长度的字符作为简短的唯一标识符
+	shortUniqueID := hexDig[:length]
+
+	return shortUniqueID
 }

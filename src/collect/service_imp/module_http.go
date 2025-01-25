@@ -232,6 +232,13 @@ func (t *BaseRequestHandler) GetResult() *common.Result {
 	}
 	result := make(map[string]interface{})
 	json.Unmarshal(body, &result)
+	if utils.IsValueEmpty(result) {
+		arr := make([]map[string]interface{}, 0)
+		json.Unmarshal(body, &arr)
+		if len(arr) > 0 {
+			return common.Ok(arr, "请求发送成功")
+		}
+	}
 	return common.Ok(result, "请求发送成功")
 }
 

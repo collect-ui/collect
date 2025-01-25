@@ -4,6 +4,7 @@ import (
 	common "github.com/SelfDown/collect/src/collect/common"
 	config "github.com/SelfDown/collect/src/collect/config"
 	utils "github.com/SelfDown/collect/src/collect/utils"
+	"time"
 )
 
 type Service2Field struct {
@@ -27,6 +28,38 @@ func (uf *Service2Field) HandlerData(template *config.Template, handlerParam *co
 		}
 
 	}
-	r2 := ts.ResultInner(serviceParam)
-	return r2
+	if handlerParam.LoopMax > 0 {
+		var i int64 // 定义 i 为 int64 类型
+		var r2 *common.Result
+		for i = 0; i < handlerParam.LoopMax; i++ {
+			r2 = ts.ResultInner(serviceParam)
+			if !r2.Success {
+				return r2
+			}
+			saveField := handlerParam.SaveField //处理存储
+			if !utils.IsValueEmpty(saveField) { //如果有保存字段，则处理
+				template.AddParam(saveField, r2.GetData())
+			}
+			// 处理判断服务是否运行正确
+			tpl := handlerParam.TemplateTpl
+			if tpl != nil { // 如果template 模板不为空，则渲染值
+				success := utils.RenderTplBool(tpl, params)
+				if success { // 成功
+					break
+				}
+			}
+			// 请求完成等待
+			if handlerParam.Second > 0 {
+				tmp := time.Second * time.Duration(handlerParam.Second)
+				time.Sleep(tmp)
+			} else {
+				time.Sleep(time.Second * 1) //
+			}
+		}
+		return r2
+	} else {
+		r2 := ts.ResultInner(serviceParam)
+		return r2
+	}
+
 }

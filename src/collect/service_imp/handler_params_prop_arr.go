@@ -28,7 +28,28 @@ func (uf *PropArr) HandlerData(template *config.Template, handlerParam *config.H
 			for _, v := range sub_arr {
                 li = append(li, v)
             }
-		}else{
+		}else if !utils.IsValueEmpty(handlerParam.Fields){
+			var paramsCopy map[string]interface{}
+			if !utils.IsValueEmpty(handlerParam.Item) { // 如果没有配置item 则取本身
+				paramsCopy = utils.CopyMap(params)
+			}
+			for _, field := range handlerParam.Fields {
+				for index, dataItem := range arr {
+					if !utils.IsValueEmpty(handlerParam.Item) { // 如果配置了item，设置item
+						paramsCopy[utils.ItemName] = dataItem
+					} else { // 没有配置item取整个item
+						paramsCopy = dataItem
+					}
+					paramsCopy["loop_index"] = index
+					//渲染值
+					value := utils.RenderTplDataWithType(field.TemplateTpl, paramsCopy, field.Type)
+					if utils.IsValueEmpty(value){
+						continue
+					}
+					li = append(li, value)
+				}
+			}
+		} else{
 			value := utils.RenderVar(handlerParam.Value, item)
 			li = append(li, value)
 		}

@@ -15,6 +15,9 @@ func (s *ModelUpdateService) Result(template *config.Template, ts *TemplateServi
 	params := template.GetParams()
 	tableName := template.Table
 	modelData := ts.GetModel(tableName)
+	if modelData == nil {
+		return common.NotOk(tableName + "没有找到，请检查模型数据")
+	}
 	checkResult := s.CheckFilter(template, modelData)
 	if !checkResult.Success {
 		return checkResult

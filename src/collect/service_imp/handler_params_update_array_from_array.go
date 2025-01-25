@@ -4,6 +4,7 @@ import (
 	common "github.com/SelfDown/collect/src/collect/common"
 	config "github.com/SelfDown/collect/src/collect/config"
 	utils "github.com/SelfDown/collect/src/collect/utils"
+	"github.com/demdxx/gocast"
 )
 
 type UpdateArrayFromArray struct {
@@ -77,11 +78,16 @@ func (uf *UpdateArrayFromArray) HandlerData(template *config.Template, handlerPa
 				}
 				if !utils.IsValueEmpty(handlerParam.Right) {
 					fieldName := handlerParam.Field
-					fieldId := utils.RenderVar(fieldName, item).(string)
+					fieldId := gocast.ToString(utils.RenderVar(fieldName, item))
+					if utils.IsValueEmpty(fieldId) {
+						item[field.Field] = nil
+						continue
+					}
 					rightItem, ok := rightDict[fieldId]
 					if ok {
 						paramsCopy[utils.RightName] = rightItem
 					} else { // todo 这里不确定没有匹配上是要跳过，还是填充key，先跳过
+						item[field.Field] = nil
 						continue
 					}
 

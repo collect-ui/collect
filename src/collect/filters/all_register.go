@@ -28,6 +28,11 @@ func GetFilters() map[string]any {
 		"sub_arr_attr":        SubArrAttr,
 		"str_contains":        StrContains,
 		"random_int":          RandomInt,
+		"first_item":          FirstItem,
+		"concat":              Concat,
+		"genId":               GenId,
+		"join":                Join,
+		"date_format":         DateFormat,
 	}
 
 }
