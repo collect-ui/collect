@@ -4,6 +4,7 @@ import (
 	gen "github.com/SelfDown/collect/gen"
 	"github.com/SelfDown/collect/model"
 	templateService "github.com/SelfDown/collect/src/collect/service_imp"
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -52,6 +53,8 @@ func main() {
 	//r := gin.New()
 	// 上面是日志不输出，下面是日志输出
 	r := gin.Default()
+	// 启用 Gzip 压缩中间件
+	r.Use(gzip.Gzip(gzip.BestCompression))
 
 	r.SetTrustedProxies([]string{"127.0.0.1"})
 
