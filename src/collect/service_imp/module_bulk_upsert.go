@@ -52,6 +52,7 @@ func (s *BulkUpsertService) Result(template *config.Template, ts *TemplateServic
 		template.LogData(modelList)
 		template.LogData("更新字段")
 		template.LogData(fieldNames)
+		gormDB = gormDB.Debug()
 	}
 	dbx := gormDB.Model(modelData).Clauses(clause.OnConflict{
 		//UpdateAll: true,

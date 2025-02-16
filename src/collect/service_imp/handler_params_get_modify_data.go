@@ -473,7 +473,7 @@ func (s *ArrayObjRule) handlerAddRemove(leftArr []map[string]interface{}, rightA
 	none := make(map[string]interface{})
 	//处理新增
 	for _, item := range addList {
-		after := utils.RenderVar(s.GetLeftField(), item)
+		after := utils.RenderVar(s.GetLeftValueField(), item)
 		change := ChangeData{
 			AfterDataMap:  item,
 			BeforeDataMap: item,
@@ -486,7 +486,7 @@ func (s *ArrayObjRule) handlerAddRemove(leftArr []map[string]interface{}, rightA
 	}
 	//处理删除
 	for _, item := range removeList {
-		before := utils.RenderVar(s.GetRightField(), item)
+		before := utils.RenderVar(s.GetRightValueField(), item)
 		change := ChangeData{
 			AfterDataMap:  item,
 			BeforeDataMap: none,
